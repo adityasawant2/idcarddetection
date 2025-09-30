@@ -1,0 +1,120 @@
+# ------------------------------------------------------------
+# Global
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.swp
+*.swo
+*.orig
+*.bak
+.env
+.env.*
+.env.local
+.envrc
+.editorconfig.local
+.idea/
+.vscode/
+
+# ------------------------------------------------------------
+# Python / Backend (FastAPI, Alembic)
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+site/
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+*.dylib
+
+# Alembic cache/artifacts
+alembic/versions/__pycache__/
+
+# Local database files (uncomment if using sqlite)
+# *.db
+# *.sqlite3
+
+# ------------------------------------------------------------
+# JavaScript / Frontend (React Native, Expo)
+# ------------------------------------------------------------
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Expo
+.expo/
+.expo-shared/
+**/.expo/
+**/.expo-shared/
+
+# React Native build outputs
+android/
+ios/
+expo-packager-cache-
+metro-cache/
+**/build/
+**/dist/
+.gradle/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing/coverage
+coverage/
+**/coverage/
+
+# React Native caches
+*.iml
+.watchmanconfig
+watchman/
+logs/
+
+# OS-specific
+ehthumbs.db
+
+# ------------------------------------------------------------
+# Docker / Compose
+# ------------------------------------------------------------
+.docker/
+**/.docker/
+docker-data/
+
+# ------------------------------------------------------------
+# Project-specific
+# ------------------------------------------------------------
+# Expo credentials or local debug keystores (if ever generated)
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.pem
+*.key
+
+# Local tooling output
+.cache/
+**/.cache/
+
+

@@ -1,0 +1,188 @@
+# ID Verification API Sample Requests
+# Use with VS Code REST Client extension or similar tools
+
+### Variables
+@baseUrl = http://localhost:8000
+@adminEmail = admin@example.com
+@adminPassword = admin123
+@policeEmail = police@example.com
+@policePassword = police123
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Root Endpoint
+GET {{baseUrl}}/
+
+### Register Police User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{policeEmail}}",
+  "password": "{{policePassword}}",
+  "name": "John Police",
+  "phone": "1234567890",
+  "role": "police"
+}
+
+### Login as Police
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username={{policeEmail}}&password={{policePassword}}
+
+### Login as Admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username={{adminEmail}}&password={{adminPassword}}
+
+### Get Current User (requires token)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Pending Police Approvals (Admin only)
+GET {{baseUrl}}/admin/police-unapproved
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+### Approve Police User (Admin only)
+POST {{baseUrl}}/admin/approve-police/USER_ID_HERE
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+### Reject Police User (Admin only)
+POST {{baseUrl}}/admin/reject-police/USER_ID_HERE
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+### Get All Logs (Admin only)
+GET {{baseUrl}}/admin/logs
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+### Get Logs with Filters (Admin only)
+GET {{baseUrl}}/admin/logs?verification_result=legit&limit=10&offset=0
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+### Get User Logs (Police only)
+GET {{baseUrl}}/logs/
+Authorization: Bearer YOUR_POLICE_TOKEN_HERE
+
+### Verify ID Document (Police only)
+# Note: This requires a multipart form with image file
+POST {{baseUrl}}/verify/
+Authorization: Bearer YOUR_POLICE_TOKEN_HERE
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="id_document.jpg"
+Content-Type: image/jpeg
+
+< ./sample_id_document.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="psm"
+
+6
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="oem"
+
+3
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Verify ID Document with Metadata
+POST {{baseUrl}}/verify/
+Authorization: Bearer YOUR_POLICE_TOKEN_HERE
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="id_document.jpg"
+Content-Type: image/jpeg
+
+< ./sample_id_document.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="metadata"
+
+{"location": "police_station_1", "officer_notes": "routine_check"}
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Sample cURL Commands
+
+### Register Police User (cURL)
+curl -X POST "{{baseUrl}}/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newpolice@example.com",
+    "password": "password123",
+    "name": "New Police Officer",
+    "phone": "9876543210",
+    "role": "police"
+  }'
+
+### Login (cURL)
+curl -X POST "{{baseUrl}}/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username={{adminEmail}}&password={{adminPassword}}"
+
+### Verify ID (cURL)
+curl -X POST "{{baseUrl}}/verify/" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -F "file=@/path/to/id_document.jpg" \
+  -F "psm=6" \
+  -F "oem=3"
+
+### Get Logs (cURL)
+curl -X GET "{{baseUrl}}/logs/" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+### Expected Response Examples
+
+### Successful Login Response
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "token_type": "bearer",
+  "role": "police",
+  "is_approved": true
+}
+
+### Verification Response
+{
+  "id_number": "MH0420250026953",
+  "verification": "legit",
+  "image_similarity": 0.912,
+  "confidence": 95.0,
+  "parsed_fields": {
+    "name": "John Doe",
+    "dob": "15/03/1990",
+    "address": "123 Main Street, City",
+    "license_number": "MH0420250026953"
+  },
+  "errors": []
+}
+
+### Error Response
+{
+  "detail": "Could not validate credentials"
+}
+
+### Log Entry Response
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "police_user_id": "123e4567-e89b-12d3-a456-426614174001",
+  "dl_code_checked": "MH0420250026953",
+  "verification_result": "legit",
+  "image_similarity": 0.912,
+  "confidence": 95.0,
+  "parsed_fields": {
+    "name": "John Doe",
+    "dob": "15/03/1990"
+  },
+  "created_at": "2024-01-01T12:00:00Z",
+  "police_user": {
+    "id": "123e4567-e89b-12d3-a456-426614174001",
+    "email": "police@example.com",
+    "name": "John Police",
+    "role": "police",
+    "is_approved": true,
+    "created_at": "2024-01-01T10:00:00Z"
+  }
+}
+
+
